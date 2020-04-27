@@ -1,0 +1,36 @@
+{
+  "name": "yals",
+  "version": "0.1.0",
+  "description": "localStorage for Node.js",
+  "author": "Sho Kuroda <krdlab@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/krdlab/node-yals#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krdlab/node-yals.git"
+  },
+  "keywords": [
+    "localstorage"
+  ],
+  "bugs": {
+    "url": "https://github.com/krdlab/node-yals/issues"
+  },
+  "main": "dist/localstorage.js",
+  "types": "dist/localstorage.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -r ./dist; tsc",
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@types/node": "^13.13.4",
+    "@types/write-file-atomic": "^3.0.0",
+    "write-file-atomic": "^3.0.3"
+  }
+}
