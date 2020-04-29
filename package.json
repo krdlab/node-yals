@@ -32,8 +32,10 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@types/better-sqlite3": "^5.4.0",
     "@types/node": "^13.13.4",
     "@types/write-file-atomic": "^3.0.0",
+    "better-sqlite3": "^7.0.1",
     "write-file-atomic": "^3.0.3"
   }
 }

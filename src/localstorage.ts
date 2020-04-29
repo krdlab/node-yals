@@ -12,8 +12,8 @@ export class LocalStorage implements Storage {
 
   public static getInstance(
     location: string,
-    quota: number = this.DEFAULT_QUOTA,
-    backendType: BackendType = "file"
+    backendType: BackendType = "file",
+    quota: number = this.DEFAULT_QUOTA
   ): LocalStorage {
     if (!this.instances.has(location)) {
       const backend = createBackend(backendType, location, quota);
