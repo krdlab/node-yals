@@ -1,11 +1,12 @@
 // Copyright (c) 2020 Sho Kuroda <krdlab@gmail.com>
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
 import path from "path";
 import fs from "fs";
 import { sync as writeSync } from "write-file-atomic";
+import { QuotaExceededError } from "./common";
 
 function _emptyDir(dirpath: string) {
   fs.readdirSync(dirpath).forEach((entry) => {
@@ -35,16 +36,6 @@ function _statSync(entry: string): fs.Stats | null {
     return fs.statSync(entry);
   } catch (_) {
     return null;
-  }
-}
-
-export class QuotaExceededError extends Error {
-  constructor(message: string = "") {
-    super(message);
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, QuotaExceededError);
-    }
-    this.name = "QuotaExceededError";
   }
 }
 

@@ -3,18 +3,9 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import { QuotaExceededError } from "./common";
 import path from "path";
 import connect, { Database, Statement } from "better-sqlite3";
-
-export class QuotaExceededError extends Error {
-  constructor(message: string = "") {
-    super(message);
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, QuotaExceededError);
-    }
-    this.name = "QuotaExceededError";
-  }
-}
 
 class MetaData {
   constructor(readonly key: string, readonly size: number) {}
