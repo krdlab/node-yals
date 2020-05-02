@@ -6,6 +6,7 @@
 import { FileLocalStorage } from "./file";
 import { SqliteLocalStorage } from "./sqlite";
 
+export { Closeable } from "./closeable";
 export type BackendType = "file" | "sqlite";
 
 export function createBackend(

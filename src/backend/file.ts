@@ -7,6 +7,7 @@ import path from "path";
 import fs from "fs";
 import { sync as writeSync } from "write-file-atomic";
 import { QuotaExceededError } from "./common";
+import { Closeable } from "./closeable";
 
 function _emptyDir(dirpath: string) {
   fs.readdirSync(dirpath).forEach((entry) => {
@@ -63,7 +64,7 @@ class MetaData {
   constructor(readonly encodedKey: EncodedString, readonly size: number = 0) {}
 }
 
-export class FileLocalStorage implements Storage {
+export class FileLocalStorage implements Storage, Closeable {
   private _length: number = 0;
   private _bytesInUse: number = 0;
   private _keys = new Array<string>();
@@ -97,6 +98,10 @@ export class FileLocalStorage implements Storage {
     if (this._bytesInUse > this._quota) {
       throw new QuotaExceededError("load");
     }
+  }
+
+  close() {
+    this.clear();
   }
 
   clear(): void {

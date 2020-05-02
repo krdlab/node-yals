@@ -3,9 +3,9 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { createBackend, BackendType } from "./backend";
+import { createBackend, BackendType, Closeable } from "./backend";
 
-export class LocalStorage implements Storage {
+export class LocalStorage implements Storage, Closeable {
   private static readonly instances = new Map<string, LocalStorage>();
 
   private static readonly DEFAULT_QUOTA = 5 * 1024 * 1024;
@@ -24,6 +24,10 @@ export class LocalStorage implements Storage {
   }
 
   private constructor(private readonly _delegate: Storage) {}
+
+  close() {
+    this._delegate.close();
+  }
 
   clear(): void {
     this._delegate.clear();

@@ -3,19 +3,19 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { QuotaExceededError } from "./common";
 import path from "path";
 import connect, { Database, Statement } from "better-sqlite3";
+import { QuotaExceededError } from "./common";
+import { Closeable } from "./closeable";
 
 class MetaData {
   constructor(readonly key: string, readonly size: number) {}
 }
 
-export class SqliteLocalStorage implements Storage {
+export class SqliteLocalStorage implements Storage, Closeable {
   private static readonly TABLE_NAME = "items";
 
   private _db: Database;
-  private _createTable: Statement;
   private _load: Statement;
   private _setItem: Statement;
   private _getItem: Statement;
@@ -32,11 +32,9 @@ export class SqliteLocalStorage implements Storage {
     private readonly _quota: number
   ) {
     this._db = connect(path.join(this._location, "db.sqlite3"));
+    this._createTable();
 
     const table = SqliteLocalStorage.TABLE_NAME;
-    this._createTable = this._db.prepare(
-      `CREATE TABLE IF NOT EXISTS ${table} (key TEXT PRIMARY KEY, value TEXT NOT NULL, size INT NOT NULL)`
-    );
     this._load = this._db.prepare(`SELECT * FROM ${table}`);
     this._setItem = this._db.prepare(
       `INSERT OR REPLACE INTO ${table} (key, value, size) VALUES (?, ?, ?)`
@@ -50,9 +48,16 @@ export class SqliteLocalStorage implements Storage {
     this._init();
   }
 
-  private _init() {
-    this._createTable.run();
+  private _createTable() {
+    const table = SqliteLocalStorage.TABLE_NAME;
+    this._db
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS ${table} (key TEXT PRIMARY KEY, value TEXT NOT NULL, size INT NOT NULL)`
+      )
+      .run();
+  }
 
+  private _init() {
     const items = this._load.all();
     items.forEach((item) => {
       const key = item["key"];
@@ -67,6 +72,11 @@ export class SqliteLocalStorage implements Storage {
     if (this._bytesInUse > this._quota) {
       throw new QuotaExceededError("load");
     }
+  }
+
+  close() {
+    this.clear();
+    this._db.close();
   }
 
   clear(): void {
